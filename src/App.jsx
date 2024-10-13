@@ -1,32 +1,66 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import { ColorPicker } from 'colorPicker/ColorPicker';
-import { ColorList } from 'colorList/ColorList';
-import { useColors } from 'colorPicker/useColors';
-import './index.css';
+import { Navbar } from 'navbar/Navbar';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Loader } from './components/Loader/Loader';
+import './index.scss';
+
+const HomePage = lazy(() => import('./Pages/HomePage'));
+const AboutPage = lazy(() => import('./Pages/AboutPage'));
+const ColorsPage = lazy(() => import('./Pages/ColorsPage'));
+const NotFoundPage = lazy(() => import('./Pages/NotFound'));
+const CharactersPage = lazy(() => import('./Pages/CharactersPage'));
+
+const WrapSuspense = ({ children }) => {
+  return <Suspense fallback={<Loader />}>{children}</Suspense>;
+};
 
 const App = () => {
-  const { handleSubmitSaveColor, handelChangeColor, color, colorsList } =
-    useColors();
-
   return (
-    <>
-      <h1 className='text-center bg-dark text-white p-2'>Color picker </h1>
-      <div className='container mt-4'>
-        <div className='row'>
-          <div className='col-12 col-md-4'>
-            <ColorList colorsList={colorsList} />
-          </div>
-          <div className='col-12 col-md-8'>
-            <ColorPicker
-              handleSubmitSaveColor={handleSubmitSaveColor}
-              handelChangeColor={handelChangeColor}
-              color={color}
-            />
-          </div>
-        </div>
-      </div>
-    </>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <Suspense fallback={<Loader />}>
+              <HomePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path='/about'
+          element={
+            <WrapSuspense>
+              <AboutPage />
+            </WrapSuspense>
+          }
+        />
+        <Route
+          path='/colors'
+          element={
+            <WrapSuspense>
+              <ColorsPage />
+            </WrapSuspense>
+          }
+        />
+        <Route
+          path='/character'
+          element={
+            <WrapSuspense>
+              <CharactersPage />
+            </WrapSuspense>
+          }
+        />
+        <Route
+          element={
+            <WrapSuspense>
+              <NotFoundPage />
+            </WrapSuspense>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 };
 const rootElement = document.getElementById('app');

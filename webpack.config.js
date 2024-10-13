@@ -9,7 +9,10 @@ const printCompilationMessage = require('./compilation.config.js');
 
 module.exports = (_, argv) => ({
   output: {
-    publicPath: 'http://localhost:3000/',
+    publicPath:
+      argv.mode === 'development'
+        ? 'http://localhost:3000/'
+        : 'https://mf-colorlist.vercel.app/',
   },
 
   resolve: {
@@ -67,6 +70,8 @@ module.exports = (_, argv) => ({
       remotes: {
         colorPicker: 'mf_colorpicker@http://localhost:3001/remoteEntry.js',
         colorList: 'mf_colorList@http://localhost:3002/remoteEntry.js',
+        navbar: 'mf_navbar@http://localhost:3003/remoteEntry.js',
+        cards: 'mf_cards@http://localhost:8083/remoteEntry.js',
       },
       exposes: {},
       shared: {
